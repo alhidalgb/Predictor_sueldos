@@ -13,7 +13,7 @@ import unicodedata
 # --------------------------------------------------------------------------
 
 # Rutas de archivos
-MODEL_FILE = Path(__file__).parent / 'model.pkl'
+MODEL_FILE = Path(__file__).parent / 'modelo_entrenado.pkl'
 META_FILE = Path(__file__).parent / 'metadata.json'
 
 # 2. ORDEN EXACTO DE LAS COLUMNAS (FEATURES) que el modelo espera
