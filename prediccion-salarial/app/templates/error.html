@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Error - Predicción Salarial{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-12">
+    <div class="max-w-2xl mx-auto text-center">
+        <!-- Error Icon -->
+        <div class="text-8xl mb-6">
+            {% if error_code == '404' %}
+                🔍
+            {% elif error_code == '500' %}
+                ⚠️
+            {% elif error_code == 'timeout' %}
+                ⏱️
+            {% elif error_code == 'offline' %}
+                📡
+            {% else %}
+                ❌
+            {% endif %}
+        </div>
+
+        <!-- Error Title -->
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">
+            {% if error_code == '404' %}
+                <span data-i18n="error.404.title">Página no encontrada</span>
+            {% elif error_code == '500' %}
+                <span data-i18n="error.500.title">Error del servidor</span>
+            {% elif error_code == 'timeout' %}
+                <span data-i18n="error.timeout.title">Tiempo de espera agotado</span>
+            {% elif error_code == 'offline' %}
+                <span data-i18n="error.offline.title">Sin conexión</span>
+            {% else %}
+                <span data-i18n="error.generic.title">Algo salió mal</span>
+            {% endif %}
+        </h1>
+
+        <!-- Error Message -->
+        <p class="text-xl text-gray-600 mb-8">
+            {% if error_code == '404' %}
+                <span data-i18n="error.404.message">La página que buscas no existe o ha sido movida.</span>
+            {% elif error_code == '500' %}
+                <span data-i18n="error.500.message">Hubo un problema con nuestro servidor. Por favor, intenta de nuevo más tarde.</span>
+            {% elif error_code == 'timeout' %}
+                <span data-i18n="error.timeout.message">La solicitud tardó demasiado tiempo. Por favor, verifica tu conexión e intenta de nuevo.</span>
+            {% elif error_code == 'offline' %}
+                <span data-i18n="error.offline.message">Parece que no tienes conexión a internet. Verifica tu conexión e intenta de nuevo.</span>
+            {% else %}
+                {{ error_message }}
+            {% endif %}
+        </p>
+
+        <!-- Error Code -->
+        <div class="bg-gray-100 rounded-lg px-4 py-2 inline-block mb-8">
+            <span class="text-sm text-gray-500" data-i18n="error.code">Código de error:</span>
+            <span class="font-mono font-bold text-gray-700">{{ error_code }}</span>
+        </div>
+
+        <!-- Action Button -->
+        <div>
+            <a href="{{ url_for('views.inicio') }}"
+               class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-lg inline-block">
+                <span data-i18n="error.home">Volver al Inicio</span>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
