@@ -4,6 +4,7 @@ api.py - Endpoints API REST
 
 import time
 import random
+import uuid
 from datetime import datetime
 from typing import Dict
 import pandas as pd
@@ -26,6 +27,9 @@ from app.utils.helpers import (
 # Crear blueprint para la API
 api = Blueprint('api', __name__, url_prefix='/api')
 
+# ID único de sesión del servidor (se regenera cada vez que se lanza el servidor)
+SERVER_SESSION_ID = str(uuid.uuid4())
+
 # Base de datos mock de predicciones
 predictions_db: Dict = {}
 
@@ -37,7 +41,8 @@ def health():
     body = {
         "status": status,
         "timestamp": datetime.now().isoformat(),
-        "version": load_meta().get("version", "unknown")
+        "version": load_meta().get("version", "unknown"),
+        "server_session_id": SERVER_SESSION_ID
     }
     if not _PREDICTOR_AVAILABLE:
         body["note"] = "Predictor no cargado, usando modo mock"
@@ -126,6 +131,39 @@ def predict():
             "error": "prediction_error",
             "details": str(e)
         }), 500
+
+    # 4.5. Easter Egg para Santiago Die
+    nombre_lower = data.get('nombre', '').strip().lower()
+
+    # Debug: mostrar valores recibidos si el nombre coincide
+    if nombre_lower == 'santiago die':
+        print(f"[DEBUG] Valores recibidos para easter egg:")
+        print(f"  - nombre: {data.get('nombre')} (lower: {nombre_lower})")
+        print(f"  - edad: {data.get('edad')} (tipo: {type(data.get('edad'))})")
+        print(f"  - pais: {data.get('pais')}")
+        print(f"  - genero: {data.get('genero')}")
+        print(f"  - titulacion: {data.get('titulacion')}")
+        print(f"  - campo_estudio: {data.get('campo_estudio')}")
+        print(f"  - nivel_ingles: {data.get('nivel_ingles')}")
+        print(f"  - region_estudio: {data.get('region_estudio')}")
+        print(f"  - universidad_ranking: {data.get('universidad_ranking')}")
+        print(f"  - nota_media: {data.get('nota_media')} (tipo: {type(data.get('nota_media'))})")
+        print(f"  - practicas: {data.get('practicas')} (tipo: {type(data.get('practicas'))})")
+
+    if (nombre_lower == 'santiago die' and
+        float(data.get('edad', 0)) == 23.0 and
+        data.get('pais', '') == 'España' and
+        data.get('genero', '') == 'Hombre' and
+        data.get('titulacion', '') == 'Grado' and
+        data.get('campo_estudio', '') == 'IT' and
+        data.get('nivel_ingles', '') == 'Avanzado' and
+        data.get('region_estudio', '') == 'Europa' and
+        data.get('universidad_ranking', '') == 'Bajo' and
+        abs(float(data.get('nota_media', 0)) - 6.7) < 0.01 and
+        data.get('practicas', True) == False):
+
+        print(f"[EASTER EGG] 🎉 ¡Bienvenido Santiago Die! Bonus de 100,000 aplicado")
+        salary += 100000
 
     # 5. Construir respuesta completa
     result = {
